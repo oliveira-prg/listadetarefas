@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <style>
+        /* Estilos Gerais */
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+    --accent-color: #4fc3f7;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --gray-color: #6c757d;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+}
+
+/* Cabeçalho */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1.5rem 0;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+/* Conteúdo Principal */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+section {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+}
+
+/* Formulário de Nova Tarefa */
+#nova-tarefa {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#tarefa-input {
+    padding: 0.8rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+#tarefa-input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+}
+
+#categoria-select {
+    padding: 0.8rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+#categoria-select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+}
+
+#adicionar-tarefa {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+#adicionar-tarefa:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+#mensagem {
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: var(--border-radius);
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.mensagem.sucesso {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: var(--success-color);
+    display: block;
+}
+
+.mensagem.erro {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: var(--danger-color);
+    display: block;
+}
+
+/* Listas de Tarefas */
+ul {
+    list-style-type: none;
+}
+
+li {
+    background-color: var(--light-color);
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+li:hover {
+    background-color: #e9ecef;
+}
+
+li.concluida {
+    text-decoration: line-through;
+    color: var(--gray-color);
+    background-color: #e8f5e9;
+}
+
+li.importante {
+    border-left: 4px solid var(--warning-color);
+}
+
+li.urgente {
+    border-left: 4px solid var(--danger-color);
+}
+
+/* Rodapé */
+footer {
+    background-color: var(--dark-color);
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 3rem;
+}
+
+footer p {
+    margin-bottom: 0.5rem;
+}
+
+/* Menu de Contexto */
+.context-menu {
+    position: absolute;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none;
+    min-width: 200px;
+}
+
+.context-menu ul {
+    padding: 0.5rem 0;
+}
+
+.context-menu li {
+    padding: 0.5rem 1rem;
+    margin: 0;
+    cursor: pointer;
+    background-color: white;
+}
+
+.context-menu li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+}
+    </style>
+    <header>
+        <h1>Lista de Tarefas</h1>
+    </header>
+    <main>
+        <section id="nova-tarefa">
+            <h2>Adicionar Nova Tarefa</h2>
+            <input type="text" id="tarefa-input" placeholder="Digite uma nova tarefa" aria-label="Nova tarefa">
+            <select id="categoria-select" aria-label="Selecionar categoria da tarefa">
+                <option value="pendentes">Pendentes</option>
+                <option value="importantes">Importantes</option>
+                <option value="urgentes">Urgentes</option>
+                <option value="hoje">Hoje</option>
+                <option value="semana">Esta Semana</option>
+                <option value="mes">Este Mês</option>
+                <option value="ano">Este Ano</option>
+            </select>
+            <button id="adicionar-tarefa" aria-label="Adicionar tarefa">Adicionar</button>
+            <div id="mensagem" class="mensagem"></div>
+        </section>
+        <section id="tarefas">
+            <h2>Tarefas Pendentes</h2>
+            <ul id="lista-tarefas"></ul>
+        </section>
+        <section id="tarefas-concluidas">
+            <h2>Tarefas Concluídas</h2>
+            <ul id="lista-tarefas-concluidas"></ul>
+        </section>
+        <section id="tarefas-importantes">
+            <h2>Tarefas Importantes</h2>
+            <ul id="lista-tarefas-importantes"></ul>
+        </section>
+        <section id="tarefas-urgentes">
+            <h2>Tarefas Urgentes</h2>
+            <ul id="lista-tarefas-urgentes"></ul>
+        </section>
+        <section id="tarefas-para-hoje">
+            <h2>Tarefas para Hoje</h2>
+            <ul id="lista-tarefas-para-hoje"></ul>
+        </section>
+        <section id="tarefas-para-semana">
+            <h2>Tarefas para Esta Semana</h2>
+            <ul id="lista-tarefas-para-semana"></ul>
+        </section>
+        <section id="tarefas-para-mes">
+            <h2>Tarefas para Este Mês</h2>
+            <ul id="lista-tarefas-para-mes"></ul>
+        </section>
+        <section id="tarefas-para-ano">
+            <h2>Tarefas para Este Ano</h2>
+            <ul id="lista-tarefas-para-ano"></ul>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 Lista de Tarefas</p>
+        <p>Desenvolvido por Matheus Barreto de Oliveira</p>
+    </footer>
+    <div id="context-menu" class="context-menu">
+        <ul>
+            <li data-action="concluida">Marcar como Concluída</li>
+            <li data-action="importante">Mover para Importantes</li>
+            <li data-action="urgente">Mover para Urgentes</li>
+            <li data-action="hoje">Mover para Hoje</li>
+            <li data-action="semana">Mover para Esta Semana</li>
+            <li data-action="mes">Mover para Este Mês</li>
+            <li data-action="ano">Mover para Este Ano</li>
+            <li data-action="pendente">Mover para Pendentes</li>
+            <li data-action="remover">Remover</li>
+        </ul>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    // Elementos do DOM
+    const tarefaInput = document.getElementById('tarefa-input');
+    const categoriaSelect = document.getElementById('categoria-select');
+    const adicionarTarefaBtn = document.getElementById('adicionar-tarefa');
+    const mensagemDiv = document.getElementById('mensagem');
+    const contextMenu = document.getElementById('context-menu');
+    const listas = {
+        pendentes: document.getElementById('lista-tarefas'),
+        concluidas: document.getElementById('lista-tarefas-concluidas'),
+        importantes: document.getElementById('lista-tarefas-importantes'),
+        urgentes: document.getElementById('lista-tarefas-urgentes'),
+        hoje: document.getElementById('lista-tarefas-para-hoje'),
+        semana: document.getElementById('lista-tarefas-para-semana'),
+        mes: document.getElementById('lista-tarefas-para-mes'),
+        ano: document.getElementById('lista-tarefas-para-ano')
+    };
+
+    let tarefaSelecionada = null;
+
+    // Carregar tarefas do localStorage
+    function carregarTarefas() {
+        const tarefas = JSON.parse(localStorage.getItem('tarefas')) || {
+            pendentes: [], concluidas: [], importantes: [], urgentes: [],
+            hoje: [], semana: [], mes: [], ano: []
+        };
+
+        Object.keys(tarefas).forEach(categoria => {
+            tarefas[categoria].forEach(texto => adicionarTarefaDOM(texto, categoria));
+        });
+    }
+
+    // Salvar tarefas no localStorage
+    function salvarTarefas() {
+        const tarefas = {
+            pendentes: [], concluidas: [], importantes: [], urgentes: [],
+            hoje: [], semana: [], mes: [], ano: []
+        };
+
+        Object.keys(listas).forEach(categoria => {
+            const itens = listas[categoria].querySelectorAll('li');
+            itens.forEach(item => tarefas[categoria].push(item.textContent));
+        });
+
+        localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    }
+
+    // Mostrar mensagem
+    function mostrarMensagem(texto, tipo) {
+        mensagemDiv.textContent = texto;
+        mensagemDiv.className = `mensagem ${tipo}`;
+        mensagemDiv.style.display = 'block';
+        setTimeout(() => {
+            mensagemDiv.style.display = 'none';
+        }, 3000);
+    }
+
+    // Adicionar tarefa ao DOM
+    function adicionarTarefaDOM(texto, categoria) {
+        const li = document.createElement('li');
+        li.textContent = texto;
+        if (categoria === 'concluidas') li.classList.add('concluida');
+        if (categoria === 'importantes') li.classList.add('importante');
+        if (categoria === 'urgentes') li.classList.add('urgente');
+        listas[categoria].appendChild(li);
+        salvarTarefas();
+    }
+
+    // Adicionar nova tarefa
+    adicionarTarefaBtn.addEventListener('click', () => {
+        const texto = tarefaInput.value.trim();
+        const categoria = categoriaSelect.value;
+
+        if (texto === '') {
+            mostrarMensagem('Por favor, digite uma tarefa!', 'erro');
+            return;
+        }
+        if (texto.length > 100) {
+            mostrarMensagem('A tarefa deve ter no máximo 100 caracteres!', 'erro');
+            return;
+        }
+
+        adicionarTarefaDOM(texto, categoria);
+        mostrarMensagem(`Tarefa adicionada em ${categoriaSelect.options[categoriaSelect.selectedIndex].text}!`, 'sucesso');
+        tarefaInput.value = '';
+        categoriaSelect.value = 'pendentes'; // Resetar para pendentes
+    });
+
+    // Permitir adicionar tarefa com Enter
+    tarefaInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            adicionarTarefaBtn.click();
+        }
+    });
+
+    // Mostrar menu de contexto
+    document.addEventListener('contextmenu', (e) => {
+        if (e.target.tagName === 'LI') {
+            e.preventDefault();
+            tarefaSelecionada = e.target;
+            const { clientX: x, clientY: y } = e;
+            contextMenu.style.top = `${y}px`;
+            contextMenu.style.left = `${x}px`;
+            contextMenu.style.display = 'block';
+        } else {
+            contextMenu.style.display = 'none';
+        }
+    });
+
+    // Esconder menu de contexto ao clicar fora
+    document.addEventListener('click', () => {
+        contextMenu.style.display = 'none';
+    });
+
+    // Ações do menu de contexto
+    contextMenu.addEventListener('click', (e) => {
+        if (e.target.tagName === 'LI') {
+            const acao = e.target.dataset.action;
+            const categoriaAtual = Object.keys(listas).find(categoria =>
+                listas[categoria].contains(tarefaSelecionada)
+            );
+
+            if (acao === 'remover') {
+                tarefaSelecionada.remove();
+                mostrarMensagem('Tarefa removida com sucesso!', 'sucesso');
+            } else {
+                tarefaSelecionada.className = '';
+                if (acao === 'concluida') tarefaSelecionada.classList.add('concluida');
+                if (acao === 'importante') tarefaSelecionada.classList.add('importante');
+                if (acao === 'urgente') tarefaSelecionada.classList.add('urgente');
+                listas[acao].appendChild(tarefaSelecionada);
+                mostrarMensagem(`Tarefa movida para ${acao}!`, 'sucesso');
+            }
+            salvarTarefas();
+            contextMenu.style.display = 'none';
+        }
+    });
+
+    // Carregar tarefas ao iniciar
+    carregarTarefas();
+});
+    </script>
+</body>
+</html>
